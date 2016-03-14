@@ -16,6 +16,9 @@ $(function () {
     $('#output').text('Push notifications not supported!');
     return;
   }
+
+  Notification.requestPermission();
+
   setUIState();
 
   $('#theButton').click(function () {
