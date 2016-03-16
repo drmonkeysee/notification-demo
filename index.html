@@ -35,5 +35,37 @@
     <script src="https://code.jquery.com/jquery-2.2.1.min.js" integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script>
+    <script>
+      $(function () {
+        function setButtons(subscribed) {
+          if (subscribed) {
+            $('#subscribe').prop('disabled', true);
+            $('#output').text('subscribed');
+          } else {
+            $('#subscribe').prop('disabled', false);
+            $('#output').text('unsubscribed');
+          }
+        }
+        $('#subscribe').click(function () {
+          OneSignal.push(['setSubscription', true]);
+          OneSignal.push(['isPushNotificationsEnabled', function (enabled) {
+            setButtons(enabled);
+          }]);
+        });
+        $('#unsubscribe').click(function () {
+          OneSignal.push(['setSubscription', false]);
+          OneSignal.push(['isPushNotificationsEnabled', function (enabled) {
+            setButtons(enabled);
+          }]);
+        });
+        OneSignal.push(['isPushNotificationsEnabled', function (enabled) {
+          setButtons(enabled);
+        }]);
+        OneSignal.push(['subscriptionChange', function (isSubscribed) {
+          setButtons(isSubscribed);
+          console.log('subscription changed', isSubscribed);
+        }]);
+      });
+    </script>
   </body>
 </html>
