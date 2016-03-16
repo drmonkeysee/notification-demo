@@ -10,11 +10,7 @@
       var OneSignal = OneSignal || [];
       OneSignal.LOGGING = true;
       OneSignal.push(['init', {
-        appId: '70993a42-7820-4f21-bcd2-21519d0b6227',
-        autoRegister: true,
-        notifyButton: {
-          enable: false // Set to false to hide
-        }
+        appId: '70993a42-7820-4f21-bcd2-21519d0b6227'
       }]);
       OneSignal.push(['getUserId', function (uid) { console.log('My id is:', uid); }]);
       OneSignal.push(['sendTag', 'foo', 'foovalue', function (tags) { console.log('Set tags:', tags); }]);
