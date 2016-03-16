@@ -38,7 +38,7 @@
     <script>
       $(function () {
         function setButtons(subscribed) {
-          if (Notification && Notification.permission === 'denied') {
+          if (!('Notification' in window) || Notification.permission === 'denied') {
             $('#subscribe').prop('disabled', true);
             $('#unsubscribe').prop('disabled', true);
             $('#output').text('notifications denied');
