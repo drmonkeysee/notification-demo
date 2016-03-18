@@ -19,18 +19,24 @@
           subdomainName: 'drmonkeysee-github'
         }]);
       }
-      OneSignal.push(['getUserId', function (uid) { console.log('My id is:', uid); }]);
-      OneSignal.push(['sendTag', 'foo', 'foovalue', function (tags) { console.log('Set tags:', tags); }]);
     </script>
   </head>
   <body>
+    <div id="notify-bar" class="panel collapse">
+      <div class="panel-body">
+        <ul class="list-inline">
+          <li>Would you like notifications from me?</li>
+          <li><button id="notify-deny" type="button" class="btn btn-default">Deny</button></li>
+          <li><button id="notify-allow" type="button" class="btn btn-primary">Allow</button></li>
+        </ul>
+      </div>
+    </div>
     <div class="container">
       <div class="row">
         <div class="col-md-12">
           <h1>Get some notifications, jerk</h1>
           <button id="subscribe" class="btn btn-default" type="submit">Subscribe</button>
           <button id="unsubscribe" class="btn btn-default" type="submit">Unsubscribe</button>
-          <button id="httpregister" class="btn btn-default" type="submit">Insecure Register</button>
           <p id="output">Push subscribe to initialize worker</p>
           <p id="subscription"></p>
         </div>
@@ -56,16 +62,6 @@
             $('#output').text('unsubscribed');
           }
         }
-        if (location.protocol === 'https:') {
-          $('#httpregister').hide();
-        } else {
-          $('#httpregister').click(function () {
-            OneSignal.push(['registerForPushNotifications']);
-          });
-        }
-        OneSignal.push(function () {
-          console.log('push notifications supported:', OneSignal.isPushNotificationsSupported());
-        });
         $('#subscribe').click(function () {
           OneSignal.push(['setSubscription', true]);
         });
@@ -81,6 +77,49 @@
             console.log('subscription changed', isSubscribed);
           });
         });
+        $('#notify-allow').click(function () {
+          OneSignal.push(['registerForPushNotifications']);
+          setTimeout(function() {
+            $('#notify-bar').collapse('hide');
+          }, 200);
+        });
+        $('#notify-deny').click(function () {
+          localStorage.setItem('deny-notify', 'yes');
+          setTimeout(function() {
+            $('#notify-bar').collapse('hide');
+          }, 200);
+        });
+        if (location.protocol === 'http:') {
+          OneSignal.push(function () {
+            if (!OneSignal.isPushNotificationsSupported()) {
+              console.log('push notifications not supported');
+              return;
+            }
+
+            if (localStorage.getItem('deny-notify')) {
+              console.log('push notifications denied');
+              return;
+            }
+
+            OneSignal.isPushNotificationsEnabled(function (enabled) {
+              OneSignal.getUserId(function (uid) {
+                console.log('user is', uid);
+              });
+
+              
+              if (enabled) {
+                console.log('notifications already enabled');
+                return;
+              }
+
+              console.log('notifications not enabled');
+
+              setTimeout(function () {
+                $('#notify-bar').collapse('show');
+              }, 500);
+            });
+          });
+        }
       });
     </script>
     <!--<script>
