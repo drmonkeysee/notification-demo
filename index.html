@@ -68,5 +68,31 @@
         });
       });
     </script>
+    <!--<script>
+      $(function () {
+      function setButtonUI(subscribed) {
+        if (!('Notification' in window) || Notification.permission === 'denied') {
+          // hide button UI
+        } else if (subscribed) {
+          // set to unsubscribe state
+        } else {
+          // set to resubscribe state
+        }
+      }
+      $('#subscribe-button').click(function () {
+        OneSignal.push(['isPushNotificationsEnabled', function (enabled) { // TODO: can i do this without querying enabled
+          OneSignal.setSubscription(!enabled);
+        }]);
+      });
+      OneSignal.push(function () {
+        OneSignal.on('subscriptionChange', function (isSubscribed) {
+          setButtonUI(isSubscribed);
+        });
+      });
+      OneSignal.push(['isPushNotificationsEnabled', function (enabled) {
+        setButtonUI(enabled);
+      }]);
+    });
+    </script>-->
   </body>
 </html>
